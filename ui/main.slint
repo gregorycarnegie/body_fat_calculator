@@ -1,0 +1,273 @@
+import { Button, VerticalBox, HorizontalBox, LineEdit, ComboBox, ScrollView, GridBox, GroupBox } from "std-widgets.slint";
+
+export component MeasurementGuide inherits Rectangle {
+    in property <string> title;
+    in property <string> description;
+    in property <image> guide-image;
+    in-out property <string> measurement: "";
+    
+    callback measurement-changed(string);
+    
+    background: #f5f5f5;
+    border-radius: 8px;
+    border-width: 1px;
+    border-color: #ddd;
+    
+    VerticalBox {
+        padding: 16px;
+        spacing: 12px;
+        
+        Text {
+            text: title;
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+        }
+        
+        HorizontalBox {
+            spacing: 16px;
+            
+            // Image section
+            Rectangle {
+                width: 200px;
+                height: 150px;
+                background: #fff;
+                border-radius: 4px;
+                border-width: 1px;
+                border-color: #ccc;
+                
+                Image {
+                    source: guide-image;
+                    width: 100%;
+                    height: 100%;
+                    image-fit: contain;
+                }
+            }
+            
+            // Description and input section
+            VerticalBox {
+                spacing: 8px;
+                
+                Text {
+                    text: description;
+                    font-size: 14px;
+                    color: #666;
+                    wrap: word-wrap;
+                }
+                
+                HorizontalBox {
+                    spacing: 8px;
+                    alignment: center;
+                    
+                    LineEdit {
+                        placeholder-text: "Enter measurement";
+                        text <=> measurement;
+                        edited => {
+                            measurement-changed(self.text);
+                        }
+                    }
+                    
+                    Text {
+                        text: "mm";
+                        font-size: 14px;
+                        color: #666;
+                    }
+                }
+            }
+        }
+    }
+}
+
+export component BodyFatCalculator inherits Window {
+    title: "Body Fat Calculator";
+    min-width: 900px;
+    min-height: 700px;
+    
+    // Properties for form data
+    in-out property <string> selected-gender: "Male";
+    in-out property <string> age-input: "";
+    in-out property <string> chest-measurement: "";
+    in-out property <string> abdominal-measurement: "";
+    in-out property <string> thigh-measurement: "";
+    in-out property <string> triceps-measurement: "";
+    in-out property <string> subscapular-measurement: "";
+    in-out property <string> suprailiac-measurement: "";
+    in-out property <string> midaxillary-measurement: "";
+    
+    // Result properties
+    in-out property <string> result-text: "";
+    in-out property <string> category-text: "";
+    in-out property <bool> show-results: false;
+    
+    // Callbacks
+    callback calculate-body-fat();
+    callback measurement-updated(string, string);
+    
+    VerticalBox {
+        padding: 20px;
+        spacing: 20px;
+        
+        // Header
+        Text {
+            text: "Body Fat Calculator";
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+            horizontal-alignment: center;
+        }
+        
+        // Basic info section
+        GroupBox {
+            title: "Basic Information";
+            
+            HorizontalBox {
+                spacing: 20px;
+                alignment: center;
+                
+                VerticalBox {
+                    spacing: 8px;
+                    
+                    Text {
+                        text: "Gender:";
+                        font-weight: 600;
+                    }
+                    
+                    ComboBox {
+                        model: ["Male", "Female"];
+                        current-value <=> selected-gender;
+                    }
+                }
+                
+                VerticalBox {
+                    spacing: 8px;
+                    
+                    Text {
+                        text: "Age:";
+                        font-weight: 600;
+                    }
+                    
+                    LineEdit {
+                        placeholder-text: "Enter your age";
+                        text <=> age-input;
+                    }
+                }
+            }
+        }
+        
+        // Measurements section
+        GroupBox {
+            title: "Skinfold Measurements";
+            
+            ScrollView {
+                height: 400px;
+                
+                VerticalBox {
+                    spacing: 12px;
+                    
+                    MeasurementGuide {
+                        title: "Chest";
+                        description: "Diagonal fold halfway between the nipple and shoulder crease";
+                        guide-image: @image-url("assets/chest.jpg");
+                        measurement <=> chest-measurement;
+                        measurement-changed => {
+                            measurement-updated("chest", chest-measurement);
+                        }
+                    }
+                    
+                    MeasurementGuide {
+                        title: "Abdominal";
+                        description: "Vertical fold 2cm to the right of the umbilicus";
+                        guide-image: @image-url("assets/abdominal.jpg");
+                        measurement <=> abdominal-measurement;
+                        measurement-changed => {
+                            measurement-updated("abdominal", abdominal-measurement);
+                        }
+                    }
+                    
+                    MeasurementGuide {
+                        title: "Thigh";
+                        description: "Vertical fold on the front of the thigh midway between hip and knee";
+                        guide-image: @image-url("assets/thigh.jpg");
+                        measurement <=> thigh-measurement;
+                        measurement-changed => {
+                            measurement-updated("thigh", thigh-measurement);
+                        }
+                    }
+                    
+                    MeasurementGuide {
+                        title: "Triceps";
+                        description: "Vertical fold on the back of the arm midway between shoulder and elbow";
+                        guide-image: @image-url("assets/triceps.jpg");
+                        measurement <=> triceps-measurement;
+                        measurement-changed => {
+                            measurement-updated("triceps", triceps-measurement);
+                        }
+                    }
+                    
+                    MeasurementGuide {
+                        title: "Subscapular";
+                        description: "Diagonal fold below the shoulder blade at 45-degree angle";
+                        guide-image: @image-url("assets/subscapular.jpg");
+                        measurement <=> subscapular-measurement;
+                        measurement-changed => {
+                            measurement-updated("subscapular", subscapular-measurement);
+                        }
+                    }
+                    
+                    MeasurementGuide {
+                        title: "Suprailiac";
+                        description: "Diagonal fold above the hip bone along the natural line";
+                        guide-image: @image-url("assets/suprailiac.jpg");
+                        measurement <=> suprailiac-measurement;
+                        measurement-changed => {
+                            measurement-updated("suprailiac", suprailiac-measurement);
+                        }
+                    }
+                    
+                    MeasurementGuide {
+                        title: "Midaxillary";
+                        description: "Vertical fold on the side of the torso below the armpit";
+                        guide-image: @image-url("assets/midaxillary.jpg");
+                        measurement <=> midaxillary-measurement;
+                        measurement-changed => {
+                            measurement-updated("midaxillary", midaxillary-measurement);
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Calculate button
+        Button {
+            text: "Calculate Body Fat";
+            primary: true;
+            clicked => {
+                calculate-body-fat();
+            }
+        }
+        
+        // Results section
+        if show-results: GroupBox {
+            title: "Results";
+            
+            VerticalBox {
+                spacing: 12px;
+                
+                Text {
+                    text: result-text;
+                    font-size: 18px;
+                    font-weight: 600;
+                    color: #2c3e50;
+                    horizontal-alignment: center;
+                }
+                
+                Text {
+                    text: category-text;
+                    font-size: 16px;
+                    color: #34495e;
+                    horizontal-alignment: center;
+                }
+            }
+        }
+    }
+}
