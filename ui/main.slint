@@ -12,6 +12,7 @@ export component MeasurementGuide inherits Rectangle {
     border-radius: 8px;
     border-width: 1px;
     border-color: #ddd;
+    min-height: 180px; // Ensure consistent height
     
     VerticalBox {
         padding: 16px;
@@ -22,15 +23,17 @@ export component MeasurementGuide inherits Rectangle {
             font-size: 18px;
             font-weight: 700;
             color: #333;
+            horizontal-alignment: left;
         }
         
         HorizontalBox {
             spacing: 16px;
+            alignment: stretch;
             
-            // Image section
+            // Image section - fixed size
             Rectangle {
-                width: 200px;
-                height: 150px;
+                width: 180px;
+                height: 120px;
                 background: #fff;
                 border-radius: 4px;
                 border-width: 1px;
@@ -44,26 +47,40 @@ export component MeasurementGuide inherits Rectangle {
                 }
             }
             
-            // Description and input section
+            // Description and input section - takes remaining space
             VerticalBox {
-                spacing: 8px;
+                spacing: 12px;
+                alignment: stretch;
                 
                 Text {
                     text: description;
                     font-size: 14px;
                     color: #666;
                     wrap: word-wrap;
+                    vertical-alignment: top;
                 }
                 
                 HorizontalBox {
                     spacing: 8px;
-                    alignment: center;
+                    alignment: start;
                     
-                    LineEdit {
-                        placeholder-text: "Enter measurement";
-                        text <=> measurement;
-                        edited => {
-                            measurement-changed(self.text);
+                    Rectangle {
+                        background: #fff;
+                        border-radius: 4px;
+                        border-width: 1px;
+                        border-color: #ccc;
+                        width: 120px;
+                        height: 32px;
+                        
+                        LineEdit {
+                            width: 100%;
+                            height: 100%;
+                            placeholder-text: "0.0";
+                            text <=> measurement;
+                            font-size: 14px;
+                            edited => {
+                                measurement-changed(self.text);
+                            }
                         }
                     }
                     
@@ -71,6 +88,7 @@ export component MeasurementGuide inherits Rectangle {
                         text: "mm";
                         font-size: 14px;
                         color: #666;
+                        vertical-alignment: center;
                     }
                 }
             }
@@ -80,8 +98,8 @@ export component MeasurementGuide inherits Rectangle {
 
 export component BodyFatCalculator inherits Window {
     title: "Body Fat Calculator";
-    min-width: 900px;
-    min-height: 700px;
+    min-width: 950px;
+    min-height: 800px; // Increased minimum height
     
     // Properties for form data
     in-out property <string> selected-gender: "Male";
@@ -116,56 +134,77 @@ export component BodyFatCalculator inherits Window {
             horizontal-alignment: center;
         }
         
-        // Basic info section
+        // Basic info section - more compact
         GroupBox {
             title: "Basic Information";
+            min-height: 80px;
             
             HorizontalBox {
-                spacing: 20px;
+                spacing: 40px;
                 alignment: center;
+                padding: 16px;
                 
                 VerticalBox {
                     spacing: 8px;
+                    alignment: center;
                     
                     Text {
                         text: "Gender:";
                         font-weight: 600;
+                        font-size: 14px;
                     }
                     
                     ComboBox {
                         model: ["Male", "Female"];
                         current-value <=> selected-gender;
+                        width: 120px;
                     }
                 }
                 
                 VerticalBox {
                     spacing: 8px;
+                    alignment: center;
                     
                     Text {
                         text: "Age:";
                         font-weight: 600;
+                        font-size: 14px;
                     }
                     
-                    LineEdit {
-                        placeholder-text: "Enter your age";
-                        text <=> age-input;
+                    Rectangle {
+                        background: #fff;
+                        border-radius: 4px;
+                        border-width: 1px;
+                        border-color: #ccc;
+                        width: 120px;
+                        height: 32px;
+                        
+                        LineEdit {
+                            width: 100%;
+                            height: 100%;
+                            placeholder-text: "Enter age";
+                            text <=> age-input;
+                            font-size: 14px;
+                        }
                     }
                 }
             }
         }
         
-        // Measurements section
+        // Measurements section with better scrolling
         GroupBox {
-            title: "Skinfold Measurements";
+            title: "Skinfold Measurements (7-Site Method)";
             
             ScrollView {
-                height: 400px;
+                height: 350px; // Fixed height for scroll area
+                viewport-height: 1400px; // Explicit viewport height
                 
                 VerticalBox {
-                    spacing: 12px;
+                    spacing: 16px;
+                    padding: 8px;
                     
                     MeasurementGuide {
-                        title: "Chest";
+                        title: "1. Chest";
                         description: "Diagonal fold halfway between the nipple and shoulder crease";
                         guide-image: @image-url("assets/chest.jpg");
                         measurement <=> chest-measurement;
@@ -175,7 +214,7 @@ export component BodyFatCalculator inherits Window {
                     }
                     
                     MeasurementGuide {
-                        title: "Abdominal";
+                        title: "2. Abdominal";
                         description: "Vertical fold 2cm to the right of the umbilicus";
                         guide-image: @image-url("assets/abdominal.jpg");
                         measurement <=> abdominal-measurement;
@@ -185,7 +224,7 @@ export component BodyFatCalculator inherits Window {
                     }
                     
                     MeasurementGuide {
-                        title: "Thigh";
+                        title: "3. Thigh";
                         description: "Vertical fold on the front of the thigh midway between hip and knee";
                         guide-image: @image-url("assets/thigh.jpg");
                         measurement <=> thigh-measurement;
@@ -195,7 +234,7 @@ export component BodyFatCalculator inherits Window {
                     }
                     
                     MeasurementGuide {
-                        title: "Triceps";
+                        title: "4. Triceps";
                         description: "Vertical fold on the back of the arm midway between shoulder and elbow";
                         guide-image: @image-url("assets/triceps.jpg");
                         measurement <=> triceps-measurement;
@@ -205,7 +244,7 @@ export component BodyFatCalculator inherits Window {
                     }
                     
                     MeasurementGuide {
-                        title: "Subscapular";
+                        title: "5. Subscapular";
                         description: "Diagonal fold below the shoulder blade at 45-degree angle";
                         guide-image: @image-url("assets/subscapular.jpg");
                         measurement <=> subscapular-measurement;
@@ -215,7 +254,7 @@ export component BodyFatCalculator inherits Window {
                     }
                     
                     MeasurementGuide {
-                        title: "Suprailiac";
+                        title: "6. Suprailiac";
                         description: "Diagonal fold above the hip bone along the natural line";
                         guide-image: @image-url("assets/suprailiac.jpg");
                         measurement <=> suprailiac-measurement;
@@ -225,7 +264,7 @@ export component BodyFatCalculator inherits Window {
                     }
                     
                     MeasurementGuide {
-                        title: "Midaxillary";
+                        title: "7. Midaxillary";
                         description: "Vertical fold on the side of the torso below the armpit";
                         guide-image: @image-url("assets/midaxillary.jpg");
                         measurement <=> midaxillary-measurement;
@@ -237,35 +276,60 @@ export component BodyFatCalculator inherits Window {
             }
         }
         
-        // Calculate button
-        Button {
-            text: "Calculate Body Fat";
-            primary: true;
-            clicked => {
-                calculate-body-fat();
+        // Calculate button - more prominent
+        Rectangle {
+            height: 50px;
+            background: transparent;
+            
+            Button {
+                text: "Calculate Body Fat Percentage";
+                primary: true;
+                width: 300px;
+                height: 45px;
+                clicked => {
+                    calculate-body-fat();
+                }
             }
         }
         
-        // Results section
-        if show-results: GroupBox {
+        // Results section - always visible with placeholder
+        GroupBox {
             title: "Results";
+            min-height: 120px;
             
-            VerticalBox {
-                spacing: 12px;
+            Rectangle {
+                background: show-results ? #f8f9fa : #fafafa;
+                border-radius: 8px;
+                min-height: 80px;
                 
-                Text {
-                    text: result-text;
-                    font-size: 18px;
-                    font-weight: 600;
-                    color: #2c3e50;
-                    horizontal-alignment: center;
-                }
-                
-                Text {
-                    text: category-text;
-                    font-size: 16px;
-                    color: #34495e;
-                    horizontal-alignment: center;
+                VerticalBox {
+                    spacing: 12px;
+                    alignment: center;
+                    padding: 20px;
+                    
+                    if !show-results: Text {
+                        text: "Enter your measurements and click 'Calculate' to see results";
+                        font-size: 14px;
+                        color: #6c757d;
+                        horizontal-alignment: center;
+                        font-italic: true;
+                    }
+                    
+                    if show-results: Text {
+                        text: result-text;
+                        font-size: 20px;
+                        font-weight: 700;
+                        color: #2c3e50;
+                        horizontal-alignment: center;
+                    }
+                    
+                    if show-results: Text {
+                        text: category-text;
+                        font-size: 16px;
+                        color: #34495e;
+                        horizontal-alignment: center;
+                        wrap: word-wrap;
+                    }
                 }
             }
         }
