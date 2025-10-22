@@ -3,7 +3,8 @@ import { Button, VerticalBox, HorizontalBox, LineEdit, ComboBox, ScrollView, Gri
 export component MeasurementGuide inherits Rectangle {
     in property <string> title;
     in property <string> description;
-    in property <image> guide-image;
+    in property <string> measurement-site;
+    in property <bool> is-male;
     in-out property <string> measurement: "";
     
     callback measurement-changed(string);
@@ -39,11 +40,61 @@ export component MeasurementGuide inherits Rectangle {
                 border-width: 1px;
                 border-color: #ccc;
                 
-                Image {
-                    source: guide-image;
-                    width: 100%;
-                    height: 100%;
-                    image-fit: contain;
+                if measurement-site == "chest" && is-male: Image {
+                    source: @image-url("assets/m-skin-fold-test-chest.jpg");
+                    width: 100%; height: 100%; image-fit: contain;
+                }
+                if measurement-site == "chest" && !is-male: Image {
+                    source: @image-url("assets/f-skin-fold-test-chest.jpg");
+                    width: 100%; height: 100%; image-fit: contain;
+                }
+                if measurement-site == "abdomen" && is-male: Image {
+                    source: @image-url("assets/m-skin-fold-test-abdomen.jpg");
+                    width: 100%; height: 100%; image-fit: contain;
+                }
+                if measurement-site == "abdomen" && !is-male: Image {
+                    source: @image-url("assets/f-skin-fold-test-abdomen.jpg");
+                    width: 100%; height: 100%; image-fit: contain;
+                }
+                if measurement-site == "thigh" && is-male: Image {
+                    source: @image-url("assets/m-skin-fold-test-thigh.jpg");
+                    width: 100%; height: 100%; image-fit: contain;
+                }
+                if measurement-site == "thigh" && !is-male: Image {
+                    source: @image-url("assets/f-skin-fold-test-thigh.jpg");
+                    width: 100%; height: 100%; image-fit: contain;
+                }
+                if measurement-site == "tricep" && is-male: Image {
+                    source: @image-url("assets/m-skin-fold-test-tricep.jpg");
+                    width: 100%; height: 100%; image-fit: contain;
+                }
+                if measurement-site == "tricep" && !is-male: Image {
+                    source: @image-url("assets/f-skin-fold-test-tricep.jpg");
+                    width: 100%; height: 100%; image-fit: contain;
+                }
+                if measurement-site == "subscapula" && is-male: Image {
+                    source: @image-url("assets/m-skin-fold-test-subscapula.jpg");
+                    width: 100%; height: 100%; image-fit: contain;
+                }
+                if measurement-site == "subscapula" && !is-male: Image {
+                    source: @image-url("assets/f-skin-fold-test-subscapula.jpg");
+                    width: 100%; height: 100%; image-fit: contain;
+                }
+                if measurement-site == "suprailiac" && is-male: Image {
+                    source: @image-url("assets/m-skin-fold-test-suprailiac.jpg");
+                    width: 100%; height: 100%; image-fit: contain;
+                }
+                if measurement-site == "suprailiac" && !is-male: Image {
+                    source: @image-url("assets/f-skin-fold-test-suprailiac.jpg");
+                    width: 100%; height: 100%; image-fit: contain;
+                }
+                if measurement-site == "midaxillary" && is-male: Image {
+                    source: @image-url("assets/m-skin-fold-test-midaxillary.jpg");
+                    width: 100%; height: 100%; image-fit: contain;
+                }
+                if measurement-site == "midaxillary" && !is-male: Image {
+                    source: @image-url("assets/f-skin-fold-test-midaxillary.jpg");
+                    width: 100%; height: 100%; image-fit: contain;
                 }
             }
             
@@ -206,7 +257,8 @@ export component BodyFatCalculator inherits Window {
                     MeasurementGuide {
                         title: "1. Chest";
                         description: "Diagonal fold halfway between the nipple and shoulder crease";
-                        guide-image: @image-url("assets/chest.jpg");
+                        measurement-site: "chest";
+                        is-male: selected-gender == "Male";
                         measurement <=> chest-measurement;
                         measurement-changed => {
                             measurement-updated("chest", chest-measurement);
@@ -216,7 +268,8 @@ export component BodyFatCalculator inherits Window {
                     MeasurementGuide {
                         title: "2. Abdominal";
                         description: "Vertical fold 2cm to the right of the umbilicus";
-                        guide-image: @image-url("assets/abdominal.jpg");
+                        measurement-site: "abdomen";
+                        is-male: selected-gender == "Male";
                         measurement <=> abdominal-measurement;
                         measurement-changed => {
                             measurement-updated("abdominal", abdominal-measurement);
@@ -226,7 +279,8 @@ export component BodyFatCalculator inherits Window {
                     MeasurementGuide {
                         title: "3. Thigh";
                         description: "Vertical fold on the front of the thigh midway between hip and knee";
-                        guide-image: @image-url("assets/thigh.jpg");
+                        measurement-site: "thigh";
+                        is-male: selected-gender == "Male";
                         measurement <=> thigh-measurement;
                         measurement-changed => {
                             measurement-updated("thigh", thigh-measurement);
@@ -236,7 +290,8 @@ export component BodyFatCalculator inherits Window {
                     MeasurementGuide {
                         title: "4. Triceps";
                         description: "Vertical fold on the back of the arm midway between shoulder and elbow";
-                        guide-image: @image-url("assets/triceps.jpg");
+                        measurement-site: "tricep";
+                        is-male: selected-gender == "Male";
                         measurement <=> triceps-measurement;
                         measurement-changed => {
                             measurement-updated("triceps", triceps-measurement);
@@ -246,7 +301,8 @@ export component BodyFatCalculator inherits Window {
                     MeasurementGuide {
                         title: "5. Subscapular";
                         description: "Diagonal fold below the shoulder blade at 45-degree angle";
-                        guide-image: @image-url("assets/subscapular.jpg");
+                        measurement-site: "subscapula";
+                        is-male: selected-gender == "Male";
                         measurement <=> subscapular-measurement;
                         measurement-changed => {
                             measurement-updated("subscapular", subscapular-measurement);
@@ -256,7 +312,8 @@ export component BodyFatCalculator inherits Window {
                     MeasurementGuide {
                         title: "6. Suprailiac";
                         description: "Diagonal fold above the hip bone along the natural line";
-                        guide-image: @image-url("assets/suprailiac.jpg");
+                        measurement-site: "suprailiac";
+                        is-male: selected-gender == "Male";
                         measurement <=> suprailiac-measurement;
                         measurement-changed => {
                             measurement-updated("suprailiac", suprailiac-measurement);
@@ -266,7 +323,8 @@ export component BodyFatCalculator inherits Window {
                     MeasurementGuide {
                         title: "7. Midaxillary";
                         description: "Vertical fold on the side of the torso below the armpit";
-                        guide-image: @image-url("assets/midaxillary.jpg");
+                        measurement-site: "midaxillary";
+                        is-male: selected-gender == "Male";
                         measurement <=> midaxillary-measurement;
                         measurement-changed => {
                             measurement-updated("midaxillary", midaxillary-measurement);
@@ -284,6 +342,8 @@ export component BodyFatCalculator inherits Window {
             Button {
                 text: "Calculate Body Fat Percentage";
                 primary: true;
+                // font-size: 16px;
+                // font-weight: 600;
                 width: 300px;
                 height: 45px;
                 clicked => {
