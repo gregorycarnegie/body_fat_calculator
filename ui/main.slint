@@ -1,6 +1,6 @@
 import { Button, VerticalBox, HorizontalBox, LineEdit, ComboBox, ScrollView, GridBox, GroupBox } from "std-widgets.slint";
 
-export component MeasurementGuide inherits Rectangle {
+component MeasurementGuide inherits Rectangle {
     in property <string> title;
     in property <string> description;
     in property <string> measurement-site;
@@ -123,12 +123,14 @@ export component MeasurementGuide inherits Rectangle {
                         width: 120px;
                         height: 32px;
                         
-                        LineEdit {
+                        TextInput {
                             width: 100%;
                             height: 100%;
-                            placeholder-text: "0.0";
                             text <=> measurement;
                             font-size: 14px;
+                            color: #333;
+                            vertical-alignment: center;
+                            horizontal-alignment: left;
                             edited => {
                                 measurement-changed(self.text);
                             }
@@ -229,13 +231,15 @@ export component BodyFatCalculator inherits Window {
                         border-color: #ccc;
                         width: 120px;
                         height: 32px;
-                        
-                        LineEdit {
+
+                        TextInput {
                             width: 100%;
                             height: 100%;
-                            placeholder-text: "Enter age";
                             text <=> age-input;
                             font-size: 14px;
+                            color: #333;
+                            vertical-alignment: center;
+                            horizontal-alignment: left;
                         }
                     }
                 }
